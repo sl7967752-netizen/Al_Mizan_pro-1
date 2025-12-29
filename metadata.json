@@ -1,0 +1,5 @@
+{
+  "name": "Advanced Zakat Calculator",
+  "description": "A comprehensive, Sharia-compliant Zakat calculator supporting multiple languages (English, Hindi, Urdu), various assets, and Fiqh-specific rules.",
+  "requestFramePermissions": []
+}
