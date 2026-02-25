@@ -140,7 +140,12 @@ export const ZakatAI: React.FC<ZakatAIProps> = ({ t, language, externalQuestion,
       </div>
 
       {/* Chat Area */}
-      <div className="h-80 overflow-y-auto p-4 bg-gray-50 space-y-4">
+      <div 
+        className="h-80 overflow-y-auto p-4 bg-gray-50 space-y-4"
+        role="log"
+        aria-live="polite"
+        aria-label="Chat messages"
+      >
         {messages.map((msg, index) => (
           <div 
             key={index} 
@@ -149,13 +154,14 @@ export const ZakatAI: React.FC<ZakatAIProps> = ({ t, language, externalQuestion,
             <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
               msg.role === 'user' ? 'bg-emerald-600' : 'bg-indigo-600'
             }`}>
-              {msg.role === 'user' ? <User className="w-5 h-5 text-white" /> : <Bot className="w-5 h-5 text-white" />}
+              {msg.role === 'user' ? <User className="w-5 h-5 text-white" aria-hidden="true" /> : <Bot className="w-5 h-5 text-white" aria-hidden="true" />}
             </div>
             <div className={`max-w-[80%] rounded-2xl px-4 py-2 text-sm shadow-sm whitespace-pre-wrap ${
               msg.role === 'user' 
                 ? 'bg-emerald-600 text-white rounded-tr-none' 
                 : 'bg-white text-gray-800 border border-gray-100 rounded-tl-none'
             }`}>
+              <span className="sr-only">{msg.role === 'user' ? 'You:' : 'AI Scholar:'}</span>
               {msg.text}
             </div>
           </div>
@@ -163,10 +169,10 @@ export const ZakatAI: React.FC<ZakatAIProps> = ({ t, language, externalQuestion,
         {isLoading && messages[messages.length - 1]?.role === 'user' && (
           <div className="flex items-start gap-3">
             <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center">
-              <Bot className="w-5 h-5 text-white" />
+              <Bot className="w-5 h-5 text-white" aria-hidden="true" />
             </div>
             <div className="bg-white px-4 py-2 rounded-2xl rounded-tl-none border border-gray-100 shadow-sm">
-              <Loader2 className="w-5 h-5 animate-spin text-indigo-600" />
+              <Loader2 className="w-5 h-5 animate-spin text-indigo-600" aria-label="AI is thinking" />
             </div>
           </div>
         )}
@@ -182,15 +188,17 @@ export const ZakatAI: React.FC<ZakatAIProps> = ({ t, language, externalQuestion,
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyPress}
             placeholder={t.aiSection.placeholder}
+            aria-label={t.aiSection.placeholder}
             className="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
             disabled={isLoading}
           />
           <button
             onClick={handleSendClick}
             disabled={isLoading || !input.trim()}
+            aria-label={t.aiSection.send}
             className="bg-indigo-800 hover:bg-indigo-900 text-white px-4 py-2 rounded-lg font-medium transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >
-            <Send className="w-4 h-4" />
+            <Send className="w-4 h-4" aria-hidden="true" />
             <span className="hidden sm:inline">{t.aiSection.send}</span>
           </button>
         </div>

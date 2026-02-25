@@ -1,7 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { Translation, Language } from '../types';
-import { CheckCircle, Info, Sparkles } from 'lucide-react';
+import { CheckCircle, Info, Sparkles, HelpCircle } from 'lucide-react';
 import { HijriDatePicker } from './HijriDatePicker';
+import { EligibilityWizard } from './EligibilityWizard';
 
 interface ConditionsProps {
   t: Translation;
@@ -12,12 +13,16 @@ interface ConditionsProps {
   onUpdate: (field: string, value: any) => void;
   onAskAI: (question: string) => void;
   language: Language;
+  currentNetWealth: number;
+  nisabThreshold: number;
 }
 
 export const Conditions: React.FC<ConditionsProps> = ({ 
-  t, isMuslim, hasOwnership, hawlComplete, hawlDate, onUpdate, onAskAI, language
+  t, isMuslim, hasOwnership, hawlComplete, hawlDate, onUpdate, onAskAI, language,
+  currentNetWealth, nisabThreshold
 }) => {
   const [activeInfo, setActiveInfo] = useState<string | null>(null);
+  const [showWizard, setShowWizard] = useState(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleMouseEnter = (key: string) => {
@@ -39,8 +44,17 @@ export const Conditions: React.FC<ConditionsProps> = ({
     setActiveInfo(activeInfo === key ? null : key);
   };
 
-  const ExplanationCard = ({ text, type }: { text: string, type: string }) => (
+  const handleWizardComplete = (results: { isMuslim: boolean; hasOwnership: boolean; hawlComplete: boolean }) => {
+    onUpdate('isMuslim', results.isMuslim);
+    onUpdate('hasOwnership', results.hasOwnership);
+    onUpdate('hawlComplete', results.hawlComplete);
+  };
+
+  const ExplanationCard = ({ text, type, id }: { text: string, type: string, id: string }) => (
     <div 
+      id={id}
+      role="region"
+      aria-live="polite"
       className="mt-2 text-xs text-emerald-800 bg-emerald-50 p-3 rounded-lg border border-emerald-100 animate-in slide-in-from-top-1 fade-in z-10 relative"
       onMouseEnter={handleCardMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -61,10 +75,29 @@ export const Conditions: React.FC<ConditionsProps> = ({
 
   return (
     <div className="bg-white rounded-xl shadow-sm p-6 mb-6 border border-gray-100">
-      <h2 className="text-lg font-bold text-emerald-900 mb-4 flex items-center gap-2">
-        <CheckCircle className="w-5 h-5 text-emerald-600" />
-        {t.conditions}
-      </h2>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+        <h2 className="text-lg font-bold text-emerald-900 flex items-center gap-2">
+          <CheckCircle className="w-5 h-5 text-emerald-600" />
+          {t.conditions}
+        </h2>
+        <button 
+          onClick={() => setShowWizard(true)}
+          className="flex items-center gap-2 px-4 py-1.5 bg-emerald-50 text-emerald-700 rounded-full text-xs font-bold border border-emerald-200 hover:bg-emerald-100 transition"
+        >
+          <HelpCircle className="w-4 h-4" />
+          {t.wizard.start}
+        </button>
+      </div>
+      
+      {showWizard && (
+        <EligibilityWizard 
+          t={t}
+          onClose={() => setShowWizard(false)}
+          onComplete={handleWizardComplete}
+          currentNetWealth={currentNetWealth}
+          nisabThreshold={nisabThreshold}
+        />
+      )}
       
       <div className="grid md:grid-cols-2 gap-4">
         <div className="space-y-4">
@@ -83,12 +116,15 @@ export const Conditions: React.FC<ConditionsProps> = ({
               <button 
                 onClick={() => toggleInfo('muslim')}
                 onMouseEnter={() => handleMouseEnter('muslim')}
+                aria-expanded={activeInfo === 'muslim'}
+                aria-controls="info-muslim"
+                aria-label={`${t.conditionMuslim} info`}
                 className="p-2 text-emerald-400 hover:text-emerald-700 transition"
               >
                 <Info className="w-5 h-5" />
               </button>
             </div>
-            {activeInfo === 'muslim' && <ExplanationCard text={t.conditionExplanations.muslim} type="Being Muslim" />}
+            {activeInfo === 'muslim' && <ExplanationCard id="info-muslim" text={t.conditionExplanations.muslim} type="Being Muslim" />}
           </div>
           
           {/* Ownership Condition */}
@@ -106,12 +142,15 @@ export const Conditions: React.FC<ConditionsProps> = ({
               <button 
                 onClick={() => toggleInfo('ownership')}
                 onMouseEnter={() => handleMouseEnter('ownership')}
+                aria-expanded={activeInfo === 'ownership'}
+                aria-controls="info-ownership"
+                aria-label={`${t.conditionOwnership} info`}
                 className="p-2 text-emerald-400 hover:text-emerald-700 transition"
               >
                 <Info className="w-5 h-5" />
               </button>
             </div>
-            {activeInfo === 'ownership' && <ExplanationCard text={t.conditionExplanations.ownership} type="Complete Ownership (Milk at-Tamm)" />}
+            {activeInfo === 'ownership' && <ExplanationCard id="info-ownership" text={t.conditionExplanations.ownership} type="Complete Ownership (Milk at-Tamm)" />}
           </div>
         </div>
 
@@ -131,12 +170,15 @@ export const Conditions: React.FC<ConditionsProps> = ({
               <button 
                 onClick={() => toggleInfo('hawl')}
                 onMouseEnter={() => handleMouseEnter('hawl')}
+                aria-expanded={activeInfo === 'hawl'}
+                aria-controls="info-hawl"
+                aria-label={`${t.conditionHawl} info`}
                 className="p-2 text-emerald-400 hover:text-emerald-700 transition"
               >
                 <Info className="w-5 h-5" />
               </button>
             </div>
-            {activeInfo === 'hawl' && <ExplanationCard text={t.conditionExplanations.hawl} type="Hawl (One Lunar Year)" />}
+            {activeInfo === 'hawl' && <ExplanationCard id="info-hawl" text={t.conditionExplanations.hawl} type="Hawl (One Lunar Year)" />}
           </div>
 
           <HijriDatePicker 

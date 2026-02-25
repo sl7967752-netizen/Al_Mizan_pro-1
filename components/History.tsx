@@ -76,12 +76,12 @@ export const History: React.FC<HistoryProps> = ({ t, history, currentCurrency, o
                     {formatDate(record.timestamp)}
                   </span>
                   {record.isPaid ? (
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-green-100 text-green-700">
-                      <CheckCircle2 className="w-3 h-3" /> {t.history.status}: {t.history.markPaid}
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-green-100 text-green-700" role="status">
+                      <CheckCircle2 className="w-3 h-3" aria-hidden="true" /> {t.history.status}: {t.history.markPaid}
                     </span>
                   ) : (
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-red-700">
-                      <XCircle className="w-3 h-3" /> {t.history.status}: {t.history.markUnpaid}
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-red-700" role="status">
+                      <XCircle className="w-3 h-3" aria-hidden="true" /> {t.history.status}: {t.history.markUnpaid}
                     </span>
                   )}
                 </div>
@@ -111,16 +111,18 @@ export const History: React.FC<HistoryProps> = ({ t, history, currentCurrency, o
                       className={`p-2 rounded-full hover:bg-gray-100 transition ${
                         record.isPaid ? 'text-gray-400' : 'text-green-600 hover:bg-green-50'
                       }`}
+                      aria-label={record.isPaid ? t.history.markUnpaid : t.history.markPaid}
                       title={record.isPaid ? t.history.markUnpaid : t.history.markPaid}
                     >
-                      <CheckCircle2 className="w-5 h-5" />
+                      <CheckCircle2 className="w-5 h-5" aria-hidden="true" />
                     </button>
                     <button 
                       onClick={() => onDelete(record.id)}
                       className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full transition"
+                      aria-label={t.history.delete}
                       title={t.history.delete}
                     >
-                      <Trash2 className="w-5 h-5" />
+                      <Trash2 className="w-5 h-5" aria-hidden="true" />
                     </button>
                  </div>
               </div>

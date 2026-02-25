@@ -29,8 +29,18 @@ export const Settings: React.FC<SettingsProps> = ({
     setSourceTitle(null);
     
     try {
+      let locationInfo = "";
+      try {
+        const pos = await new Promise<GeolocationPosition>((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 10000 });
+        });
+        locationInfo = ` for the location near coordinates ${pos.coords.latitude}, ${pos.coords.longitude}`;
+      } catch (e) {
+        console.warn("Location access denied or failed", e);
+      }
+
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-      const prompt = `Find the current live market price for 1 gram of 24k Gold and 1 gram of Silver in ${currency}. 
+      const prompt = `Find the current live market price for 1 gram of 24k Gold and 1 gram of Silver in ${currency}${locationInfo}. 
       Return ONLY a JSON object with keys "gold" and "silver" containing the numeric price per gram. 
       Example format: {"gold": 65.50, "silver": 0.85}. Do not include any markdown formatting.`;
 
@@ -98,10 +108,11 @@ export const Settings: React.FC<SettingsProps> = ({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">{t.fiqh}</label>
-            <div className="flex bg-gray-100 rounded-lg p-1">
+            <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="fiqh-select">{t.fiqh}</label>
+            <div className="flex bg-gray-100 rounded-lg p-1" id="fiqh-select" role="group" aria-label={t.fiqh}>
               <button
                 onClick={() => onUpdate('fiqh', 'Hanafi')}
+                aria-pressed={fiqh === 'Hanafi'}
                 className={`flex-1 py-1.5 px-3 rounded-md text-sm font-medium transition ${
                   fiqh === 'Hanafi' ? 'bg-white text-emerald-700 shadow-sm' : 'text-gray-500 hover:text-gray-700'
                 }`}
@@ -110,6 +121,7 @@ export const Settings: React.FC<SettingsProps> = ({
               </button>
               <button
                 onClick={() => onUpdate('fiqh', 'Shafi')}
+                aria-pressed={fiqh === 'Shafi'}
                 className={`flex-1 py-1.5 px-3 rounded-md text-sm font-medium transition ${
                   fiqh === 'Shafi' ? 'bg-white text-emerald-700 shadow-sm' : 'text-gray-500 hover:text-gray-700'
                 }`}
@@ -121,10 +133,11 @@ export const Settings: React.FC<SettingsProps> = ({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">{t.nisabBasis}</label>
-            <div className="flex bg-gray-100 rounded-lg p-1">
+            <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="nisab-select">{t.nisabBasis}</label>
+            <div className="flex bg-gray-100 rounded-lg p-1" id="nisab-select" role="group" aria-label={t.nisabBasis}>
               <button
                 onClick={() => onUpdate('nisabStandard', 'Gold')}
+                aria-pressed={nisabStandard === 'Gold'}
                 className={`flex-1 py-1.5 px-3 rounded-md text-sm font-medium transition ${
                   nisabStandard === 'Gold' ? 'bg-yellow-100 text-yellow-800 shadow-sm' : 'text-gray-500'
                 }`}
@@ -133,6 +146,7 @@ export const Settings: React.FC<SettingsProps> = ({
               </button>
               <button
                 onClick={() => onUpdate('nisabStandard', 'Silver')}
+                aria-pressed={nisabStandard === 'Silver'}
                 className={`flex-1 py-1.5 px-3 rounded-md text-sm font-medium transition ${
                   nisabStandard === 'Silver' ? 'bg-slate-200 text-slate-800 shadow-sm' : 'text-gray-500'
                 }`}
@@ -155,28 +169,30 @@ export const Settings: React.FC<SettingsProps> = ({
              <button
               onClick={fetchLiveRates}
               disabled={isFetching}
+              aria-live="polite"
               className="text-xs bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-full border border-emerald-200 flex items-center gap-1 hover:bg-emerald-100 transition disabled:opacity-50"
              >
-               {isFetching ? <Loader2 className="w-3 h-3 animate-spin" /> : <RefreshCw className="w-3 h-3" />}
+               {isFetching ? <Loader2 className="w-3 h-3 animate-spin" aria-hidden="true" /> : <RefreshCw className="w-3 h-3" aria-hidden="true" />}
                {isFetching ? t.fetching : t.fetchRates}
              </button>
            </div>
            
            {sourceUrl && (
-             <div className="text-xs text-gray-500 flex items-center gap-1 bg-gray-50 p-2 rounded">
+             <div className="text-xs text-gray-500 flex items-center gap-1 bg-gray-50 p-2 rounded" role="status">
                <span className="font-medium">{t.source}:</span>
                <a href={sourceUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline flex items-center gap-0.5">
                  {sourceTitle || 'External Link'}
-                 <ExternalLink className="w-3 h-3" />
+                 <ExternalLink className="w-3 h-3" aria-hidden="true" />
                </a>
              </div>
            )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">{t.goldPrice}</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="gold-price-input">{t.goldPrice}</label>
             <div className="relative">
-              <span className="absolute left-3 top-2 text-gray-500 text-sm font-bold pointer-events-none">{currencySymbol}</span>
+              <span className="absolute left-3 top-2 text-gray-500 text-sm font-bold pointer-events-none" aria-hidden="true">{currencySymbol}</span>
               <input
+                id="gold-price-input"
                 type="number"
                 min="0"
                 value={goldPrice || ''}
@@ -188,10 +204,11 @@ export const Settings: React.FC<SettingsProps> = ({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">{t.silverPrice}</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="silver-price-input">{t.silverPrice}</label>
             <div className="relative">
-              <span className="absolute left-3 top-2 text-gray-500 text-sm font-bold pointer-events-none">{currencySymbol}</span>
+              <span className="absolute left-3 top-2 text-gray-500 text-sm font-bold pointer-events-none" aria-hidden="true">{currencySymbol}</span>
               <input
+                id="silver-price-input"
                 type="number"
                 min="0"
                 value={silverPrice || ''}

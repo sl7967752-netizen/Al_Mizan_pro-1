@@ -62,9 +62,10 @@ export const HijriDatePicker: React.FC<HijriDatePickerProps> = ({ value, onChang
     <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
       <div className="flex justify-between items-center mb-3">
         <label className="text-sm font-medium text-gray-700">{label}</label>
-        <div className="flex bg-white rounded-lg border border-gray-200 p-0.5">
+        <div className="flex bg-white rounded-lg border border-gray-200 p-0.5" role="group" aria-label="Date format">
           <button
             onClick={() => setMode('gregorian')}
+            aria-pressed={mode === 'gregorian'}
             className={`px-3 py-1 text-xs font-medium rounded-md transition ${
               mode === 'gregorian' ? 'bg-emerald-100 text-emerald-800' : 'text-gray-500 hover:text-gray-700'
             }`}
@@ -73,6 +74,7 @@ export const HijriDatePicker: React.FC<HijriDatePickerProps> = ({ value, onChang
           </button>
           <button
             onClick={() => setMode('hijri')}
+            aria-pressed={mode === 'hijri'}
             className={`px-3 py-1 text-xs font-medium rounded-md transition ${
               mode === 'hijri' ? 'bg-emerald-100 text-emerald-800' : 'text-gray-500 hover:text-gray-700'
             }`}
@@ -89,11 +91,12 @@ export const HijriDatePicker: React.FC<HijriDatePickerProps> = ({ value, onChang
               type="date" 
               value={value}
               onChange={(e) => onChange(e.target.value)}
+              aria-label={`${label} (Gregorian)`}
               className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
             />
-            <Calendar className="w-5 h-5 text-gray-400 absolute right-3 top-2.5 pointer-events-none" />
+            <Calendar className="w-5 h-5 text-gray-400 absolute right-3 top-2.5 pointer-events-none" aria-hidden="true" />
           </div>
-          <p className="text-xs text-emerald-700 flex items-center gap-1.5 bg-emerald-50 p-2 rounded">
+          <p className="text-xs text-emerald-700 flex items-center gap-1.5 bg-emerald-50 p-2 rounded" role="status">
             <span className="font-bold">Hijri:</span> {hijriString}
           </p>
         </div>
@@ -103,6 +106,7 @@ export const HijriDatePicker: React.FC<HijriDatePickerProps> = ({ value, onChang
             <select
               value={hDay}
               onChange={(e) => handleHijriChange('day', parseInt(e.target.value))}
+              aria-label="Hijri Day"
               className="p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none w-16"
             >
               {Array.from({ length: 30 }, (_, i) => i + 1).map(d => (
@@ -112,6 +116,7 @@ export const HijriDatePicker: React.FC<HijriDatePickerProps> = ({ value, onChang
             <select
               value={hMonth}
               onChange={(e) => handleHijriChange('month', parseInt(e.target.value))}
+              aria-label="Hijri Month"
               className="flex-1 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
             >
               {Array.from({ length: 12 }, (_, i) => (
@@ -122,11 +127,12 @@ export const HijriDatePicker: React.FC<HijriDatePickerProps> = ({ value, onChang
               type="number"
               value={hYear}
               onChange={(e) => handleHijriChange('year', parseInt(e.target.value))}
+              aria-label="Hijri Year"
               className="w-20 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
               placeholder="Year"
             />
           </div>
-          <p className="text-xs text-gray-600 flex items-center gap-1.5 bg-white border border-gray-200 p-2 rounded">
+          <p className="text-xs text-gray-600 flex items-center gap-1.5 bg-white border border-gray-200 p-2 rounded" role="status">
             <span className="font-bold text-gray-500">Gregorian:</span> {gregString}
           </p>
         </div>

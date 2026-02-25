@@ -144,6 +144,8 @@ function App() {
           onUpdate={updateState}
           onAskAI={handleAskAI}
           language={state.language}
+          currentNetWealth={result.netZakatableWealth}
+          nisabThreshold={result.nisabThreshold}
         />
 
         {/* Step 2: Configuration */}

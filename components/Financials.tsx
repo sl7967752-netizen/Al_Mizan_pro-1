@@ -64,13 +64,18 @@ export const Financials: React.FC<FinancialsProps> = ({
                 <select 
                   value={asset.type}
                   onChange={(e) => handleAssetChange(asset.id, 'type', e.target.value)}
+                  aria-label="Asset Type"
                   className="bg-transparent text-sm font-semibold text-emerald-800 outline-none cursor-pointer"
                 >
                   {Object.entries(t.assetTypes).map(([key, label]) => (
                     <option key={key} value={key}>{label}</option>
                   ))}
                 </select>
-                <button onClick={() => removeAsset(asset.id)} className="text-gray-400 hover:text-red-500">
+                <button 
+                  onClick={() => removeAsset(asset.id)} 
+                  className="text-gray-400 hover:text-red-500"
+                  aria-label={`Remove ${asset.name || 'asset'}`}
+                >
                   <Trash2 className="w-4 h-4" />
                 </button>
               </div>
@@ -81,6 +86,7 @@ export const Financials: React.FC<FinancialsProps> = ({
                   onChange={(e) => handleAssetChange(asset.id, 'name', e.target.value)}
                   className="flex-1 text-sm bg-white border border-gray-200 rounded px-2 py-1 outline-none focus:border-emerald-500"
                   placeholder="Asset Name"
+                  aria-label="Asset Name"
                 />
                 <div className="relative w-32 md:w-40">
                   <input
@@ -89,15 +95,16 @@ export const Financials: React.FC<FinancialsProps> = ({
                     value={asset.value || ''}
                     onChange={(e) => handleAssetChange(asset.id, 'value', parseFloat(e.target.value) || 0)}
                     className="w-full text-sm bg-white border border-gray-200 rounded px-2 py-1 outline-none focus:border-emerald-500 text-right pr-8"
+                    aria-label="Asset Value"
                   />
-                  <span className="absolute right-2 top-1.5 text-xs text-gray-500 pointer-events-none">
+                  <span className="absolute right-2 top-1.5 text-xs text-gray-500 pointer-events-none" aria-hidden="true">
                     {['gold', 'silver', 'jewelry'].includes(asset.type) ? t.gram : currencySymbol}
                   </span>
                 </div>
               </div>
                {/* Fiqh Warning for Jewelry */}
                {asset.type === 'jewelry' && fiqh === 'Shafi' && (
-                <p className="text-xs text-orange-600 mt-2 bg-orange-50 p-1 rounded">
+                <p className="text-xs text-orange-600 mt-2 bg-orange-50 p-1 rounded" role="alert">
                   * Verify if zakatable under Shafi (personal use is exempt).
                 </p>
               )}
@@ -106,6 +113,7 @@ export const Financials: React.FC<FinancialsProps> = ({
           <button 
             onClick={addNewAsset}
             className="w-full py-2 border-2 border-dashed border-emerald-200 text-emerald-600 rounded-lg text-sm font-medium hover:bg-emerald-50 transition"
+            aria-label={t.addAsset}
           >
             {t.addAsset}
           </button>
@@ -123,7 +131,11 @@ export const Financials: React.FC<FinancialsProps> = ({
             <div key={liability.id} className="p-3 bg-gray-50 rounded-lg border border-gray-100 hover:border-red-200 transition">
               <div className="flex justify-between items-start mb-2">
                 <span className="text-sm font-semibold text-red-800">{t.liabilityTypes.loan} / Others</span>
-                <button onClick={() => removeLiability(liability.id)} className="text-gray-400 hover:text-red-500">
+                <button 
+                  onClick={() => removeLiability(liability.id)} 
+                  className="text-gray-400 hover:text-red-500"
+                  aria-label={`Remove ${liability.name || 'liability'}`}
+                >
                   <Trash2 className="w-4 h-4" />
                 </button>
               </div>
@@ -134,6 +146,7 @@ export const Financials: React.FC<FinancialsProps> = ({
                   onChange={(e) => handleLiabilityChange(liability.id, 'name', e.target.value)}
                   className="flex-1 text-sm bg-white border border-gray-200 rounded px-2 py-1 outline-none focus:border-red-500"
                   placeholder="Liability Name"
+                  aria-label="Liability Name"
                 />
                 <div className="relative w-32 md:w-40">
                   <input
@@ -142,8 +155,9 @@ export const Financials: React.FC<FinancialsProps> = ({
                     value={liability.amount || ''}
                     onChange={(e) => handleLiabilityChange(liability.id, 'amount', parseFloat(e.target.value) || 0)}
                     className="w-full text-sm bg-white border border-gray-200 rounded px-2 py-1 outline-none focus:border-red-500 text-right pr-8"
+                    aria-label="Liability Amount"
                   />
-                  <span className="absolute right-2 top-1.5 text-xs text-gray-500 pointer-events-none">{currencySymbol}</span>
+                  <span className="absolute right-2 top-1.5 text-xs text-gray-500 pointer-events-none" aria-hidden="true">{currencySymbol}</span>
                 </div>
               </div>
             </div>
@@ -151,6 +165,7 @@ export const Financials: React.FC<FinancialsProps> = ({
           <button 
             onClick={addNewLiability}
             className="w-full py-2 border-2 border-dashed border-red-200 text-red-600 rounded-lg text-sm font-medium hover:bg-red-50 transition"
+            aria-label={t.addLiability}
           >
             {t.addLiability}
           </button>

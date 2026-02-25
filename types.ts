@@ -121,6 +121,10 @@ export interface Translation {
     addNotes: string;
     notesPlaceholder: string;
     qrLabel: string;
+    qrTitle: string;
+    qrModeLink: string;
+    qrModeSummary: string;
+    qrLinkPlaceholder: string;
   };
   history: {
     title: string;
@@ -136,5 +140,19 @@ export interface Translation {
     markUnpaid: string;
     delete: string;
     totalArrears: string;
+  };
+  wizard: {
+    title: string;
+    start: string;
+    next: string;
+    prev: string;
+    finish: string;
+    step1: string;
+    step2: string;
+    step3: string;
+    step4: string;
+    resultEligible: string;
+    resultNotEligible: string;
+    description: string;
   };
 }
